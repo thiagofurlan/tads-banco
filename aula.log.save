@@ -1,0 +1,9 @@
+11/09/2018
+importacao do banco programacaonet, AS, LIMIT, OFFSET, WHERE, concat ||, ORDER BY, BETWEEN, algumas funcoes de data;
+
+12/09/2018
+filtro com LIKE, ILIKE, upper(), lower(), replace(), count(), DISTINCT, MIN(), MAX(), AVG(), subquery, GROUP BY, HAVING, SUM() 
+#avaliacao: inverter argumentos para o like 
+
+25/09/2018
+
