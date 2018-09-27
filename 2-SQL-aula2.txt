@@ -1,0 +1,44 @@
+\c bd1
+
+\i navenet.sql
+
+select * from produto ;
+select * from produto where descricao like '%HD';
+select * from produto where descricao like 'HD%';
+select * from produto where descricao like 'HD %';
+select * from produto where descricao like '%HD % 500%GB%';
+select * from produto where descricao like '%HD % 500%GB%MAXTOR%';
+select * from produto where lower(descricao) like '%hd %maxtor%';
+select * from produto where descricao like upper('%hd %maxtor%');
+select * from produto where upper(descricao) like upper('%hd %maxtor%');
+select * from produto where descricao ilike '%hd %maxtor%';
+select * from produto where descricao like '%'||upper(replace('hd maxtor',' ','%'))||'%';
+select count(*) from canal;
+select count(*) from programa;
+select count(*) from programa where canal = 'PLA';
+select count(distinct nome) from programa where canal = 'PLA';
+select count(*) as quantidade from produto where descricao like '%HD %MAXTOR%';
+select min(preco) as menor_preco from produto where descricao like '%HD %MAXTOR%';
+select max(preco) as maior_preco from produto where descricao like '%HD %MAXTOR%';
+select avg(preco) as preco_medio from produto where descricao like '%HD %MAXTOR%';
+select * from produto where (descricao like '%HD %MAXTOR%') and (preco = (select min(preco) from produto where descricao like '%HD %MAXTOR%'));
+select * from produto where (descricao like '%HD %MAXTOR%') and (preco < (select avg(preco) from produto where descricao like '%HD %MAXTOR%'));
+select * from (select * from produto where descricao like '%HD %MAXTOR%') as tmp1 where preco < 30;
+select (select min(preco) from produto where descricao like '%HD %MAXTOR%') as minimo, (select avg(preco) from produto where descricao like '%HD %MAXTOR%') as media, (select max(preco) from produto where descricao like '%HD %MAXTOR%') as maximo;
+
+\i bancoingles.sql 
+
+select nome_agencia from deposito ;
+select distinct nome_agencia from deposito ;
+select nome_agencia from deposito group by nome_agencia;
+select nome_agencia,count(*) as quantidade from deposito group by nome_agencia;
+select nome_agencia,avg(saldo) as media from deposito group by nome_agencia;
+select nome_agencia,count(nome_cliente) from deposito group by nome_agencia;
+insert into deposito values ('Downtown',999,'Johnson',550);
+select nome_agencia,count(nome_cliente) from deposito group by nome_agencia;
+select nome_agencia,count(distinct nome_cliente) from deposito group by nome_agencia;
+select * from (select nome_agencia,count(*) as quantidade from deposito group by nome_agencia) as tmp1 where quantidade >= 2;
+select nome_agencia,count(*) as quantidade from deposito group by nome_agencia having count(*) >= 2;
+select nome_agencia,sum(saldo) as total from deposito group by nome_agencia;
+select nome_agencia,sum(saldo) as total from deposito group by nome_agencia having sum(saldo) >= 1000;
+

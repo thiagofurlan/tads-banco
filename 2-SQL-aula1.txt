@@ -1,0 +1,66 @@
+\c bd1
+
+select 1+2*3;
+select 1+(2*3);
+select 1+(2*3) as resultado;
+select CURRENT_TIME;
+select CURRENT_DATE;
+select now();
+select round(3.14151617181920,3);
+select real '12.34';
+select '12.34'::real;
+select cast('12.34' as real);
+select '12'::real + 3;
+select now();
+select now()+'2 months 3 days 14 hours'::interval;
+select ((2 < 3) = true);
+select ((2 < 3) <> true);
+select 'true'::boolean;
+
+\i programacaonet.sql
+
+select * from canal;
+select codigo,nome from canal;
+select nome from canal;
+select nome as nome_canal from canal;
+select nome from canal limit 10;
+select nome from canal limit 10 offset 0;
+select nome from canal limit 10 offset 10;
+select nome from canal limit 10 offset 20;
+select * from programa limit 10 offset 0;
+select * from programa where canal = 'PLA';
+select * from programa where canal = 'PLA' limit 15 offset 0;
+select * from programa where canal = 'PLA' order by nome asc limit 15 offset 0;
+select * from programa where canal = 'PLA' order by nome desc limit 10 offset 0;
+select * from programa where canal = 'PLA' order by nome desc,horario asc limit 10 offset 0;
+select nome  from programa where canal = 'PLA' order by nome desc,horario asc limit 10 offset 0;
+select distinct nome from programa where canal = 'PLA' limit 10 offset 0;
+select * from programa where horario = '2009-05-01 13:00'::timestamp;
+select * from programa where horario = '2009-05-01 13:00:15'::timestamp;
+select * from programa where horario = '2009-05-01'::date;
+select * from programa where (horario >= '2009-05-01 00:00'::timestamp) and (horario <= '2009-05-01 23:59'::timestamp);
+select * from programa where (horario >= '2009-05-01 00:00'::timestamp) and (horario <= '2009-05-01 23:59'::timestamp) and (canal ='PLA');
+select * from programa where (horario >= '2009-05-01'::date) and (horario < ('2009-05-01'::date+'1 day'::interval)) and (canal ='PLA');
+select * from programa where (horario >= '2009-05-01'::date) and (horario < ('2009-05-01'::date+'1 day'::interval)) and (canal ='PLA') limit 10 offset 0;
+select * from programa where (horario between '2009-05-01 00:00'::timestamp and '2009-05-01 23:59'::timestamp) and (canal ='PLA');
+select horario::date from programa limit 10 offset 0;
+select * from programa where (horario::date = '2009-05-01'::date) and (canal = 'PLA');
+select * from programa where (horario::date = '2009-05-01'::date) and (canal ='PLA') limit 10 offset 0;
+select date_part('day',horario) from programa where (canal = 'PLA');
+select date_part('month',horario) from programa where (canal = 'PLA');
+select date_part('year',horario) from programa where (canal = 'PLA');
+select to_char(date_part('day',horario),'00')||'/'||to_char(date_part('month',horario),'00')||'/'||to_char(date_part('year',horario),'0000') from programa where (canal = 'PLA');
+select ltrim(to_char(date_part('day',horario),'00'))||'/'||ltrim(to_char(date_part('month',horario),'00'))||'/'||ltrim(to_char(date_part('year',horario),'0000')) from programa where (canal = 'PLA');
+select *,ltrim(to_char(date_part('day',horario),'00'))||'/'||ltrim(to_char(date_part('month',horario),'00'))||'/'||ltrim(to_char(date_part('year',horario),'0000')) from programa where (canal = 'PLA');
+select canal,ltrim(to_char(date_part('day',horario),'00'))||'/'||ltrim(to_char(date_part('month',horario),'00'))||'/'||ltrim(to_char(date_part('year',horario),'0000')) as data,nome from programa where (canal = 'PLA');
+select canal,to_char(horario,'DD/MM/YYYY') as data,nome from programa where (canal = 'PLA');
+select *,date_part('dow',horario) as dia_semana from programa where (canal = 'PLA');
+select *,case date_part('dow',horario) when 0 then 'Domingo' when 1 then 'Segunda' when 2 then 'Terca' when 3 then 'Quarta' when 4 then 'Quinta' when 5 then 'Sexta' when 6 then 'Sabado' end as dia_semana from programa where (canal = 'PLA');
+select *,('{Domingo,Segunda,Terça,Quarta,Quinta,Sexta,Sabado}'::text[])[date_part('dow',horario)+1] as dia_semana from programa where (canal = 'PLA');
+insert into tabela (data) values (to_date('31/12/1990','DD/MM/YYYY'));
+select * from programa where (horario = '2009-05-10 13:10'::timestamp) and (canal = 'PLA');
+select * from programa where (horario <= '2009-05-10 13:10'::timestamp) and (canal = 'PLA');
+select * from programa where (horario <= '2009-05-02 13:10'::timestamp) and (canal = 'PLA') order by horario desc;
+select * from programa where (horario <= '2009-05-02 13:10'::timestamp) and (canal = 'PLA') order by horario desc limit 1;
+select * from programa where (horario <= now()) and (canal = 'PLA') order by horario desc limit 1;
+
