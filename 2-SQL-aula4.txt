@@ -1,0 +1,12 @@
+\c bd1
+
+\i booktown.sql 
+
+select title, last_name, first_name from books, authors where books.author_id = authors.author_id;
+select title, last_name, first_name from books cross join authors where books.author_id = authors.author_id;
+select title, last_name, first_name from books inner join authors on books.author_id = authors.author_id;
+select title, last_name, first_name from books inner join authors using (author_id);
+select title, last_name, first_name from books natural inner join authors;
+select title, isbn from books inner join editions on books.book_id = editions.book_id;
+select title, isbn from books left join editions on books.book_id = editions.book_id;
+

@@ -1,0 +1,103 @@
+BD x SGBD
+	BD = coleção de dados interligados com informações sobre um domínio
+	SGBD = software com recursos para permitir a manipulação de dados de um BD por programas aplicativos
+		interação com o SO (sistemas de arquivos, etc)
+		manutenção da integridade
+		manutenção da segurança
+		realização de backup e restauração
+		gerenciamento de transações
+		controle de concorrência
+		distribuição de carga
+		controle da distribuição dos dados
+
+Camadas de abstração de dados
+	conceitual
+	lógico
+	físico
+
+Modelos de dados
+	Hierárquico
+	Relacional
+	Documento
+
+Usuários
+	Nível de aplicativo
+	Nível de linguagens de consulta
+	Nível de linguagens de definição
+
+Modelo relacional
+
+	entidade x instância
+		entidade = objeto real ou abstrato de relevância para o negócio
+		instância = concretização de uma entidade
+
+	atributo x domínio x valor
+		atributo
+			propriedade de uma entidade, descreve, quantifica, qualifica, classifica e especifica uma entidade
+			monovalorado, multivalorado, composto, determinante (identifica unicamente entidade)
+			tipos de dados lógico, inteiro, real, caracter, texto, data, hora
+			armazenar X mostrar (armazenar sempre na forma mais simples e mais genérica)
+			literal X código (logradouro digitado (erros de digitação e abreviações) X cep escolhido em uma lista)
+			123 X "123" (utilizar numérico apenas se for utilizado em cálculos)
+		domínio = valores possíveis para um atributo
+		valor = valor instantâneo de um atributo
+
+	relacionamento
+		indica associação entre duas ou mais entidades
+
+	existência e cardinalidade
+		todos empregados exercem tarefas
+		nenhum empregado exerce mais de uma tarefa
+		nem todas as tarefas são exercidas por um empregado
+		algumas tarefas são exercidas por mais de um empregado
+
+		cada <entidade1> {deve|pode} <relacionamento> {um|vários} <entidade2>
+						 existência					  cardinalidade
+
+		cada empregado deve exercer uma tarefa
+		cada tarefa pode ser exercida por vários empregados
+
+		existência = obrigatória, opcional
+
+		cardinalidade binária
+			1:1 = um trabalhador deve possuir um cpf (1->1) e um cpf deve ser de um trabalhador (1->1)
+			1:N = um funcionário pode possuir vários dependentes (1->N) e um dependente deve ser de um funcionário (1->1)
+			N:N = um livro pode ser escrito por vários autores (1->N) e um autor pode escrever vários livros (1->N)
+
+	diagrama de entidades e relacionamentos
+
+		Peter Chen
+			retângulos = entidades
+			círculos = atributos (vazado = normal, preenchido = chave)
+			losangos = relacionamentos
+			linhas = conexões atributo-entidade, atributo-relacionamento e entidade-relacionamento
+
+		Oracle (pé de galinha)
+			retângulos = entidades e atributos (sublinhados = chave)
+			linhas = relacionamentos com existência e cardinalidade
+				-O- = zero
+				-|- = um
+				-E = vários
+				-O|- = zero ou um
+				-OE = zero ou vários
+				-|E = um ou vários
+
+	regras de integridade
+		chave primária (pk) = conjunto de atributos que identificam unicamente uma entidade
+		chave estrangeira (fk) = atributos de uma entidade que são pk em outras entidades
+		chave alternativa (ak) = aumento do desempenho de consultas
+
+		integridade entidade = pk não podem ser nulas
+		integridade referencial = fk podem ser nulas ou igual a um valor da pk correspondente
+			* cuidado ao alterar ou excluir instâncias onde a pk ocorre como fk
+
+	conceitual x lógico x físico
+		conceitual = alto nível, alguns dados estão implícitos
+		lógico = médio nível, dados explícitos, pk e fk
+		físico = todos os dados explícitos, dados tipados, pk e fk, composição de relacionamentos
+
+		composição
+			1:1 = atributo, mesma tabela
+			1:N = chave do lado 1 na tabela do lado N
+			N:N = tabela auxiliar com as chaves dos dois lados
+

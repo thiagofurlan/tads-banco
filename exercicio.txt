@@ -1,0 +1,42 @@
+*** mostrar quantos cargos cada empregado teve
+
+select empregado.nome, count(*) as qtde from empregado join cargoempregado on empregado.codigo = cargoempregado.empregado group by empregado.codigo order by 2 desc;
+
+*** mostrar o nome do empregado que teve mais cargos
+
+select empregado.nome, count(*) as qtde from empregado join cargoempregado on empregado.codigo = cargoempregado.empregado group by empregado.codigo having count(*) = (select count(*) as qtde from empregado join cargoempregado on empregado.codigo = cargoempregado.empregado group by empregado.codigo order by 1 desc limit 1);
+
+*** mostrar o cargo e o salário atual de cada empregado
+
+select cargoempregado.empregado, max(cargoempregado.inicio) as inicio from cargoempregado group by cargoempregado.empregado order by 1 asc;
+
+select cargoempregado.empregado, cargoempregado.cargo, tmp1.inicio from (select cargoempregado.empregado, max(cargoempregado.inicio) as inicio from cargoempregado group by cargoempregado.empregado order by 1 asc) as tmp1 join cargoempregado on tmp1.empregado = cargoempregado.empregado and tmp1.inicio = cargoempregado.inicio order by cargoempregado.empregado asc;
+
+select empregado.nome, cargo.descricao, cargo.salario from (select cargoempregado.empregado, max(cargoempregado.inicio) as inicio from cargoempregado group by cargoempregado.empregado order by 1 asc) as tmp1 join cargoempregado on tmp1.empregado = cargoempregado.empregado and tmp1.inicio = cargoempregado.inicio join empregado on tmp1.empregado = empregado.codigo join cargo on cargoempregado.cargo = cargo.codigo order by cargoempregado.empregado asc;
+
+*** mostrar os empregados que atualmente trabalham no Depto 2
+
+*** mostrar quantos empregados trabalham em cada depto
+
+*** mostrar o nome do empregado com o maior salário de cada depto
+
+*** mostrar a faixa do IRPF de cada empregado
+
+*** mostrar todos os cargos de um empregado
+
+*** mostrar o salário médio de um empregado
+
+*** mostrar Cargo mais alto de cada depto
+
+*** mostrar a média de salário por gênero
+
+*** mostrar a média de salário por depto
+
+*** mostrar maior e menor salário por gênero
+
+*** mostrar o maior e o menor salário por depto
+
+*** mostrar o nome da mulher que recebe o maior salario
+
+*** mostrar o nome da mulher que recebe maior salario por depto
+
