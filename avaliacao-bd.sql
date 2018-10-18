@@ -1,4 +1,4 @@
--- 1) Mostrar a quantidade de vendas por faixa etária dos clientes em fevereiro de 2000. Considerar as faixas etárias 18-25, 26-35, 36-45, 46-55, 56-65, 66-75 e 76- e que não são realizadas vendas para menores de 18 anos.
+-- 1) Mostrar a quantidade de vendas por faixa etária dos clientes em fevereiro de 2000. Considerar as faixas etárias 18-25, 26-35, 36-45, 46-55, 56-65, 66-75 e 76- e que não são realizadas vendas para menores de 18 anos. ESQUECI O PERIODO
 SELECT
 	(SELECT COUNT(*) FROM venda JOIN cliente ON venda.cliente = cliente.cpf WHERE cliente.nascimento BETWEEN NOW() - INTERVAL '25 YEARS' AND NOW() - INTERVAL '18 YEARS') AS f1,
 	(SELECT COUNT(*) FROM venda JOIN cliente ON venda.cliente = cliente.cpf WHERE cliente.nascimento BETWEEN NOW() - INTERVAL '35 YEARS' AND NOW() - INTERVAL '26 YEARS') AS f2,
@@ -9,18 +9,18 @@ SELECT
 	(SELECT COUNT(*) FROM venda JOIN cliente ON venda.cliente = cliente.cpf WHERE cliente.nascimento <= NOW() - INTERVAL '76 YEARS') as F7;
 
 
--- 2) Mostrar os vendedores que não realizaram vendas de 10 a 15 de fevereiro de 2000.
+-- 2) Mostrar os vendedores que não realizaram vendas de 10 a 15 de fevereiro de 2000. CERTO
 SELECT vendedor.nome FROM vendedor EXCEPT (SELECT vendedor.nome FROM vendedor JOIN venda ON vendedor.cpf = venda.vendedor WHERE venda.dia BETWEEN '2000-02-10' AND '2000-02-15');
 
 
--- 3) Mostrar o ranking dos produtos mais vendidos de janeiro a março de 2000.
-
+-- 3) Mostrar o ranking dos produtos mais vendidos de janeiro a março de 2000. NAO FIZ
+SELECT item.produto, SUM(item.quantidade) AS quantidade FROM venda JOIN item ON venda.codigo = item.venda WHERE venda.dia BETWEEN '2000-01-01' AND '2000-03-31' GROUP BY item.produto ORDER BY quantidade DESC;
 
  
--- 4) Mostrar o valor total de vendas por dia em fevereiro de 2000.
+-- 4) Mostrar o valor total de vendas por dia em fevereiro de 2000. CERTO
 SELECT dia, SUM(preco*quantidade) as total FROM venda JOIN item ON venda.codigo = item.venda JOIN produto ON produto.codigo = item.produto GROUP BY venda.dia HAVING venda.dia BETWEEN '2000-02-01' AND '2000-02-29' ORDER BY dia;
 
--- 5) Mostrar o ranking de clientes por gastos em fevereiro de 2000.
+-- 5) Mostrar o ranking de clientes por gastos em fevereiro de 2000. ESQUECI O PERIODO
 SELECT nome, SUM(preco*quantidade) as total FROM item JOIN venda ON item.venda = venda.codigo JOIN produto ON produto.codigo = item.produto JOIN cliente ON cliente.cpf = venda.cliente GROUP BY cpf ORDER BY 2 DESC;
 
 
