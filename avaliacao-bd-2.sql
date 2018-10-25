@@ -19,6 +19,13 @@ SELECT
  (SELECT SUM(desconto) FROM venda WHERE dia BETWEEN '2000-02-01' AND '2000-03-31') AS marco,
  (SELECT SUM(desconto) FROM venda WHERE dia BETWEEN '2000-04-01' AND '2000-04-30') AS abril;
 
+-- SOLUCAO
+select date_part('month', venda.dia) as mes, sum(item.quantidade*produto.preco*venda.desconto/100) as desconto
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	group by 1;
+
 
 -- 2) Mostrar o ranking dos produtos mais vendidos por faixa etária em fevereiro de 2000.
 SELECT produto.descricao, SUM(item.quantidade) AS quantidade FROM item JOIN produto ON item.produto = produto.codigo JOIN venda ON venda.codigo = item.venda JOIN cliente ON cliente.cpf = venda.cliente WHERE cliente.nascimento BETWEEN NOW() - INTERVAL '25 YEARS' AND NOW() - INTERVAL '18 YEARS' GROUP BY item.produto, produto.descricao ORDER BY quantidade DESC;
@@ -31,9 +38,24 @@ SELECT
 	(SELECT SUM(subtotal) FROM (SELECT SUM(item.quantidade*produto.preco - (produto.preco * (produto.comissao/100.0))) - venda.desconto AS subtotal FROM item JOIN produto ON item.produto = produto.codigo JOIN venda ON item.venda = venda.codigo WHERE venda.dia BETWEEN '2000-02-01' AND '2000-02-15' GROUP BY venda.codigo) AS tmp1) AS quinzena1,
 	(SELECT SUM(subtotal) FROM (SELECT SUM(item.quantidade*produto.preco - (produto.preco * (produto.comissao/100.0))) - venda.desconto AS subtotal FROM item JOIN produto ON item.produto = produto.codigo JOIN venda ON item.venda = venda.codigo WHERE venda.dia BETWEEN '2000-02-16' AND '2000-02-29' GROUP BY venda.codigo) AS tmp2) AS quinzena2;
 
+-- SOLUCAO
+select floor(1+date_part('day', venda.dia)/16) as quinzena,
+sum((item.quantidade*produto.preco)-
+	(item.quantidade*produto.preco*venda.desconto/100)-
+	(item.quantidade*produto.preco*produto.comissao/100)) as liquido
+from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+where venda.dia between '2000-02-01' and '2000-02-29'
+group by 1
+order by 1 asc;
+
+
 
 -- 4) Mostrar o pagamento que cada vendedor deve receber por fevereiro de 2000. OK
 SELECT vendedor.nome, vendedor.cpf, vendedor.salario, (vendedor.salario + SUM((item.quantidade*produto.preco)*(produto.comissao/100.0))) as salario_com_bonus FROM vendedor JOIN venda ON venda.vendedor = vendedor.cpf JOIN item ON item.venda = venda.codigo JOIN produto ON produto.codigo = item.produto GROUP BY vendedor.cpf;
+
+-- SOLUCAO
 
 
 drop table item;
