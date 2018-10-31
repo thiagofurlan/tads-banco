@@ -13,9 +13,96 @@
 -- valor liquido = $109.5
 
 -- 1) Mostrar os vendedores que não cumpriram a meta de $500 em vendas (valor da nota) na segunda quinzena de fevereiro de 2000.
+
+select nome, total from vendedor join 	
+	(select * from
+	(select venda.vendedor as cpf,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	group by venda.codigo having venda.dia between '2000-02-15' and '2000-02-29') as tmp1
+	where total < 500) as tmp2 on vendedor.cpf = tmp2.cpf order by total;
+
+
+
 -- 2) Mostrar os clientes que realizaram mais de 1 compra em todos os 3 primeiros meses de 2000.
+
+------| tres meses = 56
+select cliente.nome from cliente join	
+	(select cpf from
+	(select venda.cliente as cpf, count(*) as compras from venda
+	join cliente on venda.cliente = cliente.cpf
+	where venda.dia between '2000-01-01' and '2000-03-31'
+	group by venda.cliente) as tmp1 where compras > 1) as tmp2
+	on cliente.cpf = tmp2.cpf;
+
+------| em cada mes ao mesmo tempo = 0
+select cliente.nome from cliente join	
+	(select cpf from
+	(select venda.cliente as cpf, count(*) as compras from venda
+	join cliente on venda.cliente = cliente.cpf
+	where
+		venda.dia between '2000-01-01' and '2000-01-31' AND
+		venda.dia between '2000-02-01' and '2000-02-29' AND
+		venda.dia between '2000-03-01' and '2000-03-31'
+	group by venda.cliente) as tmp1 where compras > 1) as tmp2
+	on cliente.cpf = tmp2.cpf;
+
+
+
 -- 3) Mostrar a(s) venda(s) de maior valor (valor da nota) em fevereiro de 2000.
+
+select cod_venda from 	
+	(select venda.codigo as cod_venda,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	where venda.dia between '2000-02-01' and '2000-02-29'	
+	group by venda.codigo) as tmp1
+	where total = 
+	(select max(total) as maior from
+	(select	venda.codigo,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	where venda.dia between '2000-02-01' and '2000-02-29'
+	group by venda.codigo) as tmp2);
+
+
+
 -- 4) Mostrar os vendedores que venderam (valor da nota) mais em fevereiro do que em janeiro de 2000.
+select venda.vendedor,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo group by venda.codigo;
+
+
+select vendedor, sum(total) as t_janeiro from 	
+	(select venda.vendedor as vendedor,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	where venda.dia between '2000-01-01' and '2000-01-31'
+	group by venda.codigo) as tmp1 group by tmp1.vendedor;
+
+select vendedor, sum(total) as t_fevereiro from 	
+	(select venda.vendedor as vendedor,
+	sum((item.quantidade*produto.preco)-(item.quantidade*produto.preco*(venda.desconto/100))) as total
+	from venda
+	join item on venda.codigo = item.venda
+	join produto on item.produto = produto.codigo
+	where venda.dia between '2000-02-01' and '2000-02-29'
+	group by venda.codigo) as tmp2 group by tmp2.vendedor;
+
+
+
+
+
 
 drop table item;
 drop table venda;
