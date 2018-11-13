@@ -26,3 +26,23 @@ JOIN produto ON item.produto = produto.codigo
 WHERE date_part('month', venda.dia) = 2
 GROUP BY venda.vendedor) AS tmp1 ON vendedor.cpf = tmp1.vendedor) AS tmp2) AS tmp3) AS tmp4) AS tmp5) AS tmp6
 ORDER BY 1;
+
+-- QUERY 1
+SELECT venda.vendedor as vendedor, SUM((item.quantidade * produto.preco) * (produto.comissao / 100.0)) as comissao
+FROM venda
+JOIN item ON venda.codigo = item.venda
+JOIN produto ON item.produto = produto.codigo
+WHERE date_part('month', venda.dia) = 2
+GROUP BY venda.vendedor
+
+
+-- QUERY 2
+SELECT * FROM vendedor JOIN 
+(SELECT venda.vendedor as vendedor, SUM((item.quantidade * produto.preco) * (produto.comissao / 100.0)) as comissao
+FROM venda
+JOIN item ON venda.codigo = item.venda
+JOIN produto ON item.produto = produto.codigo
+WHERE date_part('month', venda.dia) = 2
+GROUP BY venda.vendedor) AS tmp1 ON vendedor.cpf = tmp1.vendedor
+
+-- Custo dessa solução: 26.03
