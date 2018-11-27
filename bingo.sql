@@ -36,5 +36,14 @@ create table numerocartela (
 create table numerorodada (
     rodada integer not null references rodada (codigo),
     numero serial not null,
-    primary key (rodada, codigo)
+    primary key (rodada, numero)
 );
+
+
+insert into rodada (data, hora,  precocartela, premio) values (now()::date, current_time, 5.00, 590.00);
+insert into rodada (data, hora,  precocartela, premio) values (now()::date, current_time, 5.00, 850.00);
+select * from rodada order by codigo desc limit 1;
+
+
+-- 2
+insert into numerocartela (cartela, numero, linha, coluna) values ();
