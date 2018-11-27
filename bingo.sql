@@ -21,12 +21,12 @@ create table rodada (
 
 create table cartela (
     codigo serial not null,
-    rodada serial not null references rodada (codigo),
-    primary key (codigo, rodada)
+    rodada integer not null references rodada (codigo),
+    primary key (codigo)
 );
 
 create table numerocartela (
-    cartela serial not null references cartela (codigo),
+    cartela integer not null references cartela (codigo),
     numero serial not null,
     linha int not null check (linha >= 1 and linha <= 5),
     coluna int not null check (coluna >= 1 and coluna <= 5),
@@ -34,7 +34,7 @@ create table numerocartela (
 );
 
 create table numerorodada (
-    rodada serial not null references rodada (codigo),
+    rodada integer not null references rodada (codigo),
     numero serial not null,
     primary key (rodada, codigo)
 );
