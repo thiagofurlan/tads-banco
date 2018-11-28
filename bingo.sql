@@ -27,7 +27,7 @@ create table cartela (
 
 create table numerocartela (
     cartela integer not null references cartela (codigo),
-    numero serial not null,
+    numero integer not null,
     linha int not null check (linha >= 1 and linha <= 5),
     coluna int not null check (coluna >= 1 and coluna <= 5),
     primary key (cartela, numero)
@@ -46,4 +46,31 @@ select * from rodada order by codigo desc limit 1;
 
 
 -- 2
-insert into numerocartela (cartela, numero, linha, coluna) values ();
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where not exists (select numero from numerocartela)), 1, 1);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 2);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 3);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 4);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 5);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 1);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 2);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 3);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 4);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 5);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 1);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 2);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 3);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 4);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 5);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 1);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 2);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 3);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 4);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 5);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 1);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 2);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 3);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 4);
+insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 5);
+
+-- 3
+
