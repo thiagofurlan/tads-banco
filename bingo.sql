@@ -5,17 +5,17 @@ drop table if exists numerocartela;
 drop table if exists numerorodada;
 
 create table caixa (
-    data date not null check (data >= now()),
-    montanteinicial real not null,
+    data date not null check (data >= now()) default now()::date,
+    montanteinicial real not null check (montanteinicial >= 0.0),
     primary key (data)
 );
 
 create table rodada (
     codigo serial not null,
-    data date not null,
-    hora time not null,
-    precocartela real not null,
-    premio real not null,
+    data date not null default now()::date,
+    hora time not null default now()::time,
+    precocartela real not null check (precocartela >= 0.0),
+    premio real not null check (premio >= 0),
     primary key (codigo)
 );
 
@@ -35,42 +35,52 @@ create table numerocartela (
 
 create table numerorodada (
     rodada integer not null references rodada (codigo),
-    numero serial not null,
+    numero integer not null,
     primary key (rodada, numero)
 );
 
+-- SETUP
+create or replace function get_random_number(inicio integer, fim integer) returns integer as $$
+    begin
+        return trunc(random() * (fim-inicio) + inicio);
+    end;
+$$ language 'plpgsql' STRICT;
 
-insert into rodada (data, hora,  precocartela, premio) values (now()::date, current_time, 5.00, 590.00);
-insert into rodada (data, hora,  precocartela, premio) values (now()::date, current_time, 5.00, 850.00);
-select * from rodada order by codigo desc limit 1;
+create or replace function geraCartela (c integer) returns void as $$
+    declare
+        i integer;
+        j integer;
+        cont integer;
+    begin
+        cont := 0;
+        for i in 1..5 loop
+           for j in 1..5 loop
+                insert into numerocartela (cartela, numero, linha, coluna) values (c, get_random_number(cont, cont+4), i, j);
+                -- encontrar uma maneira de randomizar de 4 em 4 já que temos 99 numeros e precisamos de 25
+                --if (j = 4 and i = 5) then
+                  --  cont := cont + 3;
+                --else
+                    cont := cont + 4;
+                --end if;
+           end loop;
+        end loop;
+    end;
+$$ language 'plpgsql';
+
+-- 1 OK
+insert into rodada (precocartela, premio) values (5.00, 590.00);
 
 
 -- 2
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where not exists (select numero from numerocartela)), 1, 1);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 2);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 3);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 4);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 1, 5);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 1);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 2);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 3);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 4);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 2, 5);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 1);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 2);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 3);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 4);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 3, 5);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 1);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 2);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 3);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 4);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 4, 5);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 1);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 2);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 3);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 4);
-insert into numerocartela (cartela, numero, linha, coluna) values (1, (select floor(random()*100) where exists (select numero from numerocartela)), 5, 5);
+
+insert into cartela (rodada) values ((select codigo from rodada order by codigo desc limit 1)) returning codigo; -- OK
+
+
+
+
+
+-- with recursive tmp as ((select 0 as num) union (select num + 1 from tmp where num + 1 < 100)) select * from tmp order by random() offset 1 limit 1;
+
 
 -- 3
 
