@@ -56,13 +56,28 @@ create or replace function geraCartela (c integer) returns void as $$
         for i in 1..5 loop
            for j in 1..5 loop
                 insert into numerocartela (cartela, numero, linha, coluna) values (c, get_random_number(cont, cont+4), i, j);
-                -- encontrar uma maneira de randomizar de 4 em 4 já que temos 99 numeros e precisamos de 25
-                --if (j = 4 and i = 5) then
-                  --  cont := cont + 3;
-                --else
-                    cont := cont + 4;
-                --end if;
+                cont := cont + 4;
            end loop;
+        end loop;
+    end;
+$$ language 'plpgsql';
+
+create or replace function sorteiaNumero(rodada integer) returns void as $$
+    declare
+        r integer;
+        tentativas integer;
+    begin
+        tentativas := 0;
+        r := get_random_number(0, 100);
+        loop
+            if ((select numero from numerorodada where numero = r) is not null) then
+                r := get_random_number(0, 100);
+            else
+                insert into numerorodada (rodada, numero) values (rodada, r);
+                exit;
+            end if;
+            tentativas := tentativas + 1;
+            exit when tentativas > 99;
         end loop;
     end;
 $$ language 'plpgsql';
@@ -71,16 +86,16 @@ $$ language 'plpgsql';
 insert into rodada (precocartela, premio) values (5.00, 590.00);
 
 
--- 2
-
+-- 2 OK
 insert into cartela (rodada) values ((select codigo from rodada order by codigo desc limit 1)) returning codigo; -- OK
+select geraCartela(1);
 
+-- 3 OK
+select sorteiaNumero((select codigo from rodada order by codigo desc limit 1));
 
-
-
-
--- with recursive tmp as ((select 0 as num) union (select num + 1 from tmp where num + 1 < 100)) select * from tmp order by random() offset 1 limit 1;
-
-
--- 3
-
+-- 6
+create or replace function montanteRodadaData(rodada integer, data date) returns integer as $$
+    begin
+        select sum(precocartela) from rodada group by codigo having data = '2018-11-01';
+    end;
+$$ language 'plpgsql';
