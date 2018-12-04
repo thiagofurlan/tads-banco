@@ -93,9 +93,14 @@ select geraCartela(1);
 -- 3 OK
 select sorteiaNumero((select codigo from rodada order by codigo desc limit 1));
 
--- 6
-create or replace function montanteRodadaData(rodada integer, data date) returns integer as $$
-    begin
-        select sum(precocartela) from rodada group by codigo having data = '2018-11-01';
-    end;
-$$ language 'plpgsql';
+-- 4
+select codigo from rodada order by codigo desc limit 1; --pega rodada atual
+
+select numero from numerorodada join (select codigo from rodada order by codigo desc limit 1) 
+    as tmp1 on tmp1.codigo = numerorodada.rodada; -- pega numeros sorteados na rodada atual
+
+select cartela.codigo from cartela join (select codigo from rodada order by codigo desc limit 1) 
+    as tmp1 on tmp1.codigo = cartela.rodada; -- pega as cartelas da rodada atual
+
+select numero from numerocartela join (select cartela.codigo from cartela join (select codigo from rodada order by codigo desc limit 1) as tmp1 on tmp1.codigo = cartela.rodada) as tmp2 on numerocartela.cartela = tmp2.codigo where numerocartela.cartela = 1; -- pega os numeros das cartelas da rodada atual
+
