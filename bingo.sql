@@ -46,7 +46,7 @@ create or replace function get_random_number(inicio integer, fim integer) return
     end;
 $$ language 'plpgsql' STRICT;
 
-create or replace function geraCartela (c integer) returns void as $$
+create or replace function gera_cartela (c integer) returns void as $$
     declare
         i integer;
         j integer;
@@ -62,7 +62,7 @@ create or replace function geraCartela (c integer) returns void as $$
     end;
 $$ language 'plpgsql';
 
-create or replace function sorteiaNumero(rodada integer) returns void as $$
+create or replace function sorteia_numero(rodada integer) returns void as $$
     declare
         r integer;
         tentativas integer;
@@ -85,13 +85,11 @@ $$ language 'plpgsql';
 -- 1 OK
 insert into rodada (precocartela, premio) values (5.00, 590.00);
 
-
 -- 2 OK
-insert into cartela (rodada) values ((select codigo from rodada order by codigo desc limit 1)) returning codigo; -- OK
-select geraCartela(1);
+select gera_cartela(insert into cartela (rodada) values ((select codigo from rodada order by codigo desc limit 1)) returning codigo);
 
 -- 3 OK
-select sorteiaNumero((select codigo from rodada order by codigo desc limit 1));
+select sorteia_numero((select codigo from rodada order by codigo desc limit 1));
 
 -- 4
 select codigo from rodada order by codigo desc limit 1; --pega rodada atual
